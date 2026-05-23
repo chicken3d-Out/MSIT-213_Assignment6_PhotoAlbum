@@ -1,11 +1,11 @@
-Photo Album Management App
-Live App: https://photoalbum-mzwl.onrender.com
+Photo Album Management App \n
+Live App: https://photoalbum-mzwl.onrender.com\n
 
-Features
+Features \n
 
-Create and manage photo albums
-Upload photos via Cloudinary
-Role-based access: Owner, Collaborator, Public viewer
-Search albums, set cover photos, manage collaborators
+Create and manage photo albums \n
+Upload photos via Cloudinary  \n
+Role-based access: Owner, Collaborator, Public viewer \n
+Search albums, set cover photos, manage collaborators \n
 
 Sign-in to start uploading albums
