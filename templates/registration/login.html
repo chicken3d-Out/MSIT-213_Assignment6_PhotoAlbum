@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block title %}Login — PhotoAlbum{% endblock %}
+{% block content %}
+<div class="row justify-content-center mt-5">
+  <div class="col-md-5">
+    <div class="card p-4">
+      <h4 class="mb-4 text-center fw-bold"><i class="bi bi-images text-primary me-2"></i>Sign In</h4>
+      <form method="post">
+        {% csrf_token %}
+        {% for field in form %}
+        <div class="mb-3">
+          <label class="form-label fw-semibold">{{ field.label }}</label>
+          {{ field }}
+          {% if field.errors %}
+          <div class="text-danger small mt-1">{{ field.errors.0 }}</div>
+          {% endif %}
+        </div>
+        {% endfor %}
+        <button type="submit" class="btn btn-primary w-100 mt-2">Sign In</button>
+      </form>
+      <hr>
+      <p class="text-center mb-0">New here? <a href="{% url 'register' %}">Create an account</a></p>
+    </div>
+  </div>
+</div>
+{% endblock %}

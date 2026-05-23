@@ -1,0 +1,108 @@
+{% extends 'base.html' %}
+{% block title %}{{ album.title }} — PhotoAlbum{% endblock %}
+{% block content %}
+
+<nav aria-label="breadcrumb" class="mb-3">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="{% url 'album_list' %}">Albums</a></li>
+    <li class="breadcrumb-item active">{{ album.title }}</li>
+  </ol>
+</nav>
+
+<div class="d-flex justify-content-between align-items-start mb-4 flex-wrap gap-2">
+  <div>
+    <h2 class="fw-bold mb-1">{{ album.title }}
+      {% if album.is_public %}<span class="badge bg-success ms-2">Public</span>{% endif %}
+      {% if is_admin %}<span class="badge bg-primary ms-1">You own this</span>{% endif %}
+    </h2>
+    {% if album.description %}<p class="text-muted mb-0">{{ album.description }}</p>{% endif %}
+    <small class="text-muted">
+      By {{ album.owner.username }} &bull; {{ album.photo_count }} photo{{ album.photo_count|pluralize }}
+    </small>
+  </div>
+  {% if is_admin %}
+  <div class="d-flex gap-2">
+    <a href="{% url 'album_edit' album.pk %}" class="btn btn-outline-secondary btn-sm">
+      <i class="bi bi-pencil me-1"></i>Edit Album
+    </a>
+    <a href="{% url 'album_delete' album.pk %}" class="btn btn-outline-danger btn-sm">
+      <i class="bi bi-trash me-1"></i>Delete
+    </a>
+  </div>
+  {% endif %}
+</div>
+
+{% if can_edit %}
+<!-- Upload Form -->
+<div class="card mb-4">
+  <div class="card-body">
+    <h6 class="fw-semibold mb-3"><i class="bi bi-cloud-upload me-2 text-primary"></i>Upload Photo</h6>
+    <form method="post" enctype="multipart/form-data" action="{% url 'photo_upload' album.pk %}">
+      {% csrf_token %}
+      <div class="row g-2 align-items-end">
+        <div class="col-md-3">
+          <label class="form-label small fw-semibold">Title</label>
+          {{ photo_form.title }}
+        </div>
+        <div class="col-md-3">
+          <label class="form-label small fw-semibold">Description</label>
+          {{ photo_form.description }}
+        </div>
+        <div class="col-md-4">
+          <label class="form-label small fw-semibold">Image File</label>
+          {{ photo_form.image }}
+        </div>
+        <div class="col-md-2">
+          <button type="submit" class="btn btn-primary w-100">
+            <i class="bi bi-upload me-1"></i>Upload
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+{% endif %}
+
+{% if photos %}
+<div class="row g-3">
+  {% for photo in photos %}
+  <div class="col-6 col-md-4 col-lg-3">
+    <div class="card h-100">
+      <a href="{% url 'photo_detail' photo.pk %}">
+        <img src="{{ photo.image.url }}" class="photo-thumb card-img-top" alt="{{ photo.title }}">
+      </a>
+      <div class="card-body p-2">
+        <p class="mb-0 small fw-semibold text-truncate">{{ photo.title }}</p>
+        <p class="mb-0 text-muted" style="font-size:.72rem">{{ photo.uploaded_at|date:"M d, Y" }}</p>
+      </div>
+      {% if is_admin or photo.uploaded_by == request.user %}
+      <div class="card-footer bg-transparent p-2 d-flex gap-1">
+        {% if is_admin %}
+        <form method="post" action="{% url 'set_cover' album.pk photo.pk %}" class="d-inline">
+          {% csrf_token %}
+          <button type="submit" class="btn btn-xs btn-outline-warning" style="font-size:.7rem; padding:2px 6px"
+            title="Set as cover">
+            {% if album.cover_photo == photo %}<i class="bi bi-star-fill"></i>{% else %}<i class="bi bi-star"></i>{% endif %}
+          </button>
+        </form>
+        {% endif %}
+        <a href="{% url 'photo_edit' photo.pk %}" class="btn btn-xs btn-outline-secondary ms-auto" style="font-size:.7rem; padding:2px 6px">
+          <i class="bi bi-pencil"></i>
+        </a>
+        <a href="{% url 'photo_delete' photo.pk %}" class="btn btn-xs btn-outline-danger" style="font-size:.7rem; padding:2px 6px">
+          <i class="bi bi-trash"></i>
+        </a>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% else %}
+<div class="text-center py-5">
+  <i class="bi bi-camera" style="font-size:3rem; color:#c7d2fe"></i>
+  <h6 class="mt-3 text-muted">No photos yet {% if can_edit %}— upload one above!{% endif %}</h6>
+</div>
+{% endif %}
+
+{% endblock %}

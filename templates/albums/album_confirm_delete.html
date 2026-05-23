@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% block title %}Delete Album — PhotoAlbum{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-md-5">
+    <div class="card p-4 text-center">
+      <i class="bi bi-exclamation-triangle-fill text-danger" style="font-size:3rem"></i>
+      <h4 class="mt-3 fw-bold">Delete Album?</h4>
+      <p class="text-muted">You are about to permanently delete <strong>{{ object.title }}</strong> and all its photos. This cannot be undone.</p>
+      <form method="post" class="d-flex gap-2 justify-content-center mt-3">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger"><i class="bi bi-trash me-1"></i>Yes, Delete</button>
+        <a href="{% url 'album_detail' object.pk %}" class="btn btn-outline-secondary">Cancel</a>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}
